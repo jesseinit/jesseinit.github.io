@@ -1,0 +1,17 @@
+.site__header {
+  padding: 20px 0;
+}
+
+.site__navbar {
+  display: flex;
+  justify-content: space-between;
+}
+
+.site__navbar ul {
+  display: flex;
+  list-style: none;
+}
+
+.site__navbar li:not(:last-child) {
+  padding-right: 10px;
+}
