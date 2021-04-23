@@ -1,9 +1,17 @@
+@font-face {
+  font-family: 'inter';
+  src: url('/fonts/inter_font.ttf');
+  /* src: url('ItalianNo1-Black.eot?#iefix') format('embedded-opentype'), url('ItalianNo1-Black.woff2') format('woff2'), url('ItalianNo1-Black.woff') format('woff'); */
+  font-weight: 300;
+  font-style: normal;
+}
+
 html,
 body {
   padding: 0;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  font-family: inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell,
+    Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
 }
 
 a {
