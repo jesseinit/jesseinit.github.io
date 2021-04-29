@@ -1,4 +1,10 @@
-.site__main {
+.hero {
   display: flex;
   justify-content: space-between;
+}
+
+.hero__greeting {
+  font-weight: 300;
+  font-size: 2.5em;
+  margin-bottom: 20px;
 }

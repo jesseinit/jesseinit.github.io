@@ -7,7 +7,7 @@ const NavBar = () => {
         <p>__init__</p>
         <ul>
           <li>blog</li>
-          <li>about</li>
+          <li>resume</li>
         </ul>
       </nav>
     </>

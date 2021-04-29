@@ -1,32 +1,41 @@
 import Head from 'next/head';
-import Image from 'next/image';
 import Header from '../components/navigation/Header';
-import Main from '../components/main/Main';
 import NavBar from '../components/navigation/NavBar';
+import navStyles from '../components/navigation/navigation.module.css';
+import mainStyles from '../components/main/main.module.css';
 
 export default function Home() {
   return (
     <div className="container">
       <Head>
-        <title>Jesse Egbosionu</title>
+        <title>Home - Jesse Egbosionu</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Header>
-        <NavBar />
-      </Header>
-      <Main>
-        <aside>
-          <h2 style={{ fontWeight: 300 }}>Hi I'm Jesse</h2>
-          <p>I'm a software engineer from Lagos, Nigeria</p>
-        </aside>
-        <aside>
-          <Image
-            src="https://res.cloudinary.com/dqfjoblug/image/upload/v1619192037/site__hero_rg5gzv.jpg"
-            width={468}
-            height={468}
-          />
-        </aside>
-      </Main>
+      <header className={navStyles.site__header}>
+        <nav className={navStyles.site__navbar}>
+          <p>__init__</p>
+          <ul>
+            <li>blog</li>
+            <li>resume</li>
+          </ul>
+        </nav>
+      </header>
+      <main>
+        <section className={mainStyles.hero}>
+          <aside>
+            <h2 className={mainStyles.hero__greeting}>I'm Jesse</h2>
+            <p className={mainStyles.hero__description}>
+              I'm a software engineer from Lagos, Nigeria
+            </p>
+          </aside>
+          <aside>
+            <img
+              src="https://res.cloudinary.com/dqfjoblug/image/upload/v1619192037/site__hero_rg5gzv.jpg"
+              className="hero__image"
+            />
+          </aside>
+        </section>
+      </main>
     </div>
   );
 }
