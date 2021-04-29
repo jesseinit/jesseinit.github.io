@@ -1,5 +1,5 @@
 .site__header {
-  padding: 20px 0;
+  margin: 60px 0;
 }
 
 .site__navbar {
@@ -13,5 +13,5 @@
 }
 
 .site__navbar li:not(:last-child) {
-  padding-right: 10px;
+  margin-right: 30px;
 }
