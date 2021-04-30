@@ -76,9 +76,13 @@ a {
   &__author_name {
     font-weight: 500;
     font-size: 1.2em;
-    margin: 5px 0 30px;
+    margin: 10px 0;
   }
 
+  &__links {
+    margin: 0 0 20px;
+    font-size: 0.9em;
+  }
   &__description {
     font-size: 1em;
     margin-bottom: 40px;
@@ -96,5 +100,5 @@ a {
   position: absolute;
   bottom: 0;
   font-size: 0.9em;
-  margin-bottom: 50px;
+  margin: 20px 0;
 }

@@ -22,6 +22,19 @@ export default function Home() {
         <section className="hero">
           <aside className="hero__aside">
             <h2 className="hero__author_name">Jesse Egbosionu</h2>
+            <section className="hero__links">
+              <a href="https://github.com/jesseinit" rel="noopener" alt="GitHub">
+                GitHub
+              </a>
+              <span> · </span>
+              <a href="https://linkedin.com/in/jesse-egbosionu/" rel="noopener" alt="Linkedin">
+                LinkedIn
+              </a>
+              <span> · </span>
+              <a href="https://twitter.com/jesseinit/" rel="noopener" alt="Twitter">
+                Twitter
+              </a>
+            </section>
             <p className="hero__description">
               I'm a fullstack (backend focused) software engineer from Lagos, Nigeria, still living
               in Nigeria. The vast majority of my career have been spent understanding and
