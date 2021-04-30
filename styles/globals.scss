@@ -1,0 +1,79 @@
+@font-face {
+  font-family: 'inter';
+  src: url('/fonts/inter_font.ttf');
+  font-weight: 300;
+  font-style: normal;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-family: inter, sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.container {
+  min-height: 100vh;
+  max-width: 960px;
+  min-width: 360px;
+  padding: 0 20px;
+  margin: 0 auto;
+}
+
+// Page Styles
+
+// HEADER AREA
+.header {
+  margin: 30px 0;
+
+  &__navbar {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__navbar ul {
+    display: flex;
+    list-style: none;
+  }
+
+  &__navbar li:not(:last-child) {
+    margin-right: 25px;
+  }
+}
+
+// HERO AREA
+.hero {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column-reverse;
+  padding: 30px 0;
+
+  &__aside > img {
+    text-align: center;
+  }
+
+  &__greeting {
+    font-weight: 300;
+    font-size: 1.5em;
+    margin: 20px 0 10px;
+  }
+
+  &__description {
+    font-size: 0.9em;
+  }
+
+  &__image {
+    width: 50%;
+  }
+}
