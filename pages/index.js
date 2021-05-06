@@ -59,7 +59,7 @@ export default function Home() {
           </aside>
           <aside className="hero__aside text-align-center">
             <img
-              src="https://res.cloudinary.com/dqfjoblug/image/upload/v1619192037/site__hero_rg5gzv.jpg"
+              src="https://res.cloudinary.com/dqfjoblug/image/upload/v1620311815/IMG_20201202_091620_2_furxvq.jpg"
               className="hero__image"
             />
           </aside>
