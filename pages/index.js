@@ -10,7 +10,7 @@ export default function Home() {
       <header className="header">
         <nav className="header__navbar">
           <p className="header__logo">
-            <a href="https://twitter.com/jesseinit">__init__</a>
+            <a href="https://twitter.com/jesseinit">init</a>
           </p>
           <ul className="header__nav">
             {/* <li className="header__nav__item">blog</li>
@@ -36,10 +36,10 @@ export default function Home() {
               </a>
             </section>
             <p className="hero__description">
-              I'm a fullstack (backend focused) software engineer from Lagos, Nigeria, still living
-              in Nigeria. The vast majority of my career have been spent understanding and
-              proactively leveraging technology to impact lives positively far beyond the shores of
-              my environment.
+              I'm a software engineer from Lagos, Nigeria curently focused in building and scalling
+              web backends. Creating impact, team-work and continuous learning are some of my core
+              tenets and I continuously adapt that in solving customers problems when I build
+              software.
             </p>
 
             <p className="hero__description">
@@ -66,7 +66,7 @@ export default function Home() {
         </section>
       </main>
       <footer className="footer">
-        <p className="text-align-center">Made with Awesomeness and ❤️</p>
+        <p className="text-align-center">Made with ❤️ and Vibes</p>
       </footer>
     </div>
   );
