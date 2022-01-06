@@ -12,10 +12,6 @@ export default function Home() {
           <p className="header__logo">
             <a href="https://twitter.com/jesseinit">init</a>
           </p>
-          <ul className="header__nav">
-            {/* <li className="header__nav__item">blog</li>
-            <li className="header__nav__item">resume</li> */}
-          </ul>
         </nav>
       </header>
       <main>
@@ -43,9 +39,9 @@ export default function Home() {
             </p>
 
             <p className="hero__description">
-              In the last 3 years I've been building services and products in the finance, ecommerce
+              In the last 4+ years I've been building services and products in the finance, ecommerce
               and health space, enriching lifes using technologies like Python(Django, Flask,
-              FastAPI), Javascript(React, Node.js), PostgreSQL, Docker, Redis etc.
+              FastAPI), Javascript(React, Node.js), PostgreSQL, Docker, Redis, Kubernetes etc.
             </p>
 
             <p className="hero__description">
