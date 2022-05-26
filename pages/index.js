@@ -32,8 +32,8 @@ export default function Home() {
               </a>
             </section>
             <p className="hero__description">
-              I'm a software engineer from Lagos, Nigeria curently focused in building and scalling
-              web backends. Creating impact, team-work and continuous learning are some of my core
+              I'm a software engineer based in Eindhoven, Netherlands and curently focused in building and scalling
+              software backends. Creating impact, team-work and continuous learning are some of my core
               tenets and I continuously adapt that in solving customers problems when I build
               software.
             </p>
