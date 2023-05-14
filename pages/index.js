@@ -32,9 +32,9 @@ export default function Home() {
               </a>
             </section>
             <p className="hero__description">
-              I'm a software engineer based in Eindhoven, Netherlands and curently focused in building and scalling
+              I'm a software engineer based in Amsterdam, Netherlands and curently focused in building and scalling
               software backends. Creating impact, team-work and continuous learning are some of my core
-              tenets and I continuously adapt that in solving customers problems when I build
+              tenets and I continuously adapt these in solving customers problems when I build
               software.
             </p>
 
