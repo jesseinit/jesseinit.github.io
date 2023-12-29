@@ -38,9 +38,9 @@ export default async (req, res) => {
 
   const send_call = fetch("https://api.taptapsend.com/api/fxRates", requestOptions)
     .then((response) => response.json())
-    .then((result) => rates.send = result.availableCountries[1].corridors[27]["fxRate"])
+    .then((result) => rates.send = result.availableCountries[1].corridors[29]["fxRate"])
     .catch((error) => console.log("error", error));
-  
+
   var myHeaders = new Headers();
   myHeaders.append("authority", "sendgateway.myflutterwave.com");
   myHeaders.append("accept", "application/json, text/plain, */*");
@@ -54,28 +54,28 @@ export default async (req, res) => {
   myHeaders.append("sec-fetch-mode", "cors");
   myHeaders.append("sec-fetch-site", "cross-site");
   myHeaders.append("user-agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36");
-  
+
   var requestOptions = {
     method: 'GET',
     headers: myHeaders,
     redirect: 'follow'
   };
-  
+
   const tap_call = fetch("https://sendgateway.myflutterwave.com/api/v1/config/getcurrencyrate?fromCurrency=EUR&toCurrency=NGN", requestOptions)
     .then(response => response.json())
     .then(response => response.data[0].baseRate)
     .catch(error => console.log('error', error));
-  
+
 
   await Promise.all([send_call, tap_call])
-  .then(([tap_response, send_response]) => {
-    rates.send = send_response.toString();
-    rates.tap = tap_response.toString();
-  })
-  .catch(error => {
-    console.error(error); 
-  });
+    .then(([tap_response, send_response]) => {
+      rates.send = send_response.toString();
+      rates.tap = tap_response.toString();
+    })
+    .catch(error => {
+      console.error(error);
+    });
 
   return res.status(200).json(rates);
-  
+
 };
