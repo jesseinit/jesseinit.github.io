@@ -66,21 +66,11 @@ export default async (req, res) => {
     .then(response => response.data[0].baseRate)
     .catch(error => console.log('error', error));
 
-
-  await Promise.all([send_call, tap_call])
-    .then(([tap_response, send_response]) => {
-      rates.send = send_response.toString();
-      rates.tap = tap_response.toString();
-    })
-    .catch(error => {
-      console.error(error);
-    });
-
   const { exec } = require('child_process');
 
   const curlCommand = 'curl https://acemoneytransfer.com/make-request -H "authority: acemoneytransfer.com" -H "accept: */*" -H "accept-language: en-GB,en-US;q=0.9,en;q=0.8" -H "content-type: application/x-www-form-urlencoded; charset=UTF-8" -H "origin: https://acemoneytransfer.com" -H "referer: https://acemoneytransfer.com/Nigeria/Send-Money-to-Nigeria" -H \'sec-ch-ua: "Not_A Brand";v="8", "Chromium";v="120", "Google Chrome";v="120"\' -H "sec-ch-ua-mobile: ?0" -H \'sec-ch-ua-platform: "macOS"\' -H "sec-fetch-dest: empty" -H "sec-fetch-mode: cors" -H "sec-fetch-site: same-origin" -H "user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36" -H "x-requested-with: XMLHttpRequest" --data-raw "uri=rate%2Fcalculator&type=POST&data%5Bsrc_amount%5D=100&data%5Bdest_amount%5D=&data%5Buser_currency%5D=EUR&data%5Bcalculation_mode%5D=S&data%5Bdest_iso_numeric_code%5D=566&data%5Bsrc_iso_numeric_code%5D=528&data%5Bsepecific_payer_id%5D=1199&auth=true" --compressed';
 
-  await new Promise((resolve, reject) => {
+  const ace_call = new Promise((resolve, reject) => {
     exec(curlCommand, (error, stdout, stderr) => {
       if (error) {
         reject(`Error: ${error.message}`);
@@ -91,11 +81,18 @@ export default async (req, res) => {
         reject(parseError.message);
       }
     });
-  }).then((result) => {
-    rates.ace = result.data.exchange_rate.toString();
-  })
+  }).then((result) => result.data.exchange_rate.toString()
+  ).catch((result) => "Could not get ace transfer rates")
 
-
+  await Promise.all([ace_call, send_call, tap_call])
+    .then(([tap_response, send_response, ace_reponse]) => {
+      rates.send = parseFloat(send_response);
+      rates.tap = parseFloat(tap_response);
+      rates.ace = parseFloat(ace_reponse);
+    })
+    .catch(error => {
+      console.error(error);
+    });
 
   return res.status(200).json(rates);
 
