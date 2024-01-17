@@ -1,5 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 
+import { log } from 'console';
+
 export default async (req, res) => {
   let rates = { send: "John Doe" };
 
@@ -36,9 +38,11 @@ export default async (req, res) => {
     redirect: "follow",
   };
 
-  const send_call = fetch("https://api.taptapsend.com/api/fxRates", requestOptions)
+  const tap_call = fetch("https://api.taptapsend.com/api/fxRates", requestOptions)
     .then((response) => response.json())
-    .then((result) => rates.send = result.availableCountries[1].corridors[29]["fxRate"])
+    .then((result) => {
+      rates.send = result.availableCountries[1].corridors[29]["fxRate"]
+    })
     .catch((error) => console.log("error", error));
 
   var myHeaders = new Headers();
@@ -61,7 +65,7 @@ export default async (req, res) => {
     redirect: 'follow'
   };
 
-  const tap_call = fetch("https://sendgateway.myflutterwave.com/api/v1/config/getcurrencyrate?fromCurrency=EUR&toCurrency=NGN", requestOptions)
+  const send_call = fetch("https://sendgateway.myflutterwave.com/api/v1/config/getcurrencyrate?fromCurrency=EUR&toCurrency=NGN", requestOptions)
     .then(response => response.json())
     .then(response => response.data[0].baseRate)
     .catch(error => console.log('error', error));
