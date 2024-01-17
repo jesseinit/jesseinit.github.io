@@ -41,7 +41,7 @@ export default async (req, res) => {
   const tap_call = fetch("https://api.taptapsend.com/api/fxRates", requestOptions)
     .then((response) => response.json())
     .then((result) => {
-      rates.send = result.availableCountries[1].corridors[29]["fxRate"]
+      return { "rate": result.availableCountries[1].corridors[29]["fxRate"], "provider": "tap" }
     })
     .catch((error) => console.log("error", error));
 
@@ -67,7 +67,9 @@ export default async (req, res) => {
 
   const send_call = fetch("https://sendgateway.myflutterwave.com/api/v1/config/getcurrencyrate?fromCurrency=EUR&toCurrency=NGN", requestOptions)
     .then(response => response.json())
-    .then(response => response.data[0].baseRate)
+    .then(response => {
+      return { "rate": response.data[0].baseRate, "provider": "send" }
+    })
     .catch(error => console.log('error', error));
 
   const { exec } = require('child_process');
@@ -80,19 +82,23 @@ export default async (req, res) => {
         reject(`Error: ${error.message}`);
       }
       try {
-        resolve(JSON.parse(stdout));
+        const parsed_rate = JSON.parse(stdout)
+        resolve({ "rate": parsed_rate.data.exchange_rate, "provider": "ace" });
       } catch (parseError) {
         reject(parseError.message);
       }
     });
-  }).then((result) => result.data.exchange_rate.toString()
+  }).then((result) => {
+    return { "rate": result.rate.toString(), "provider": "ace" }
+  }
   ).catch((result) => "Could not get ace transfer rates")
 
   await Promise.all([ace_call, send_call, tap_call])
-    .then(([tap_response, send_response, ace_reponse]) => {
-      rates.send = parseFloat(send_response);
-      rates.tap = parseFloat(tap_response);
-      rates.ace = parseFloat(ace_reponse);
+    .then(([ace_reponse, send_response, tap_response]) => {
+      console.log("tap_response, send_response, ace_reponse>>>", tap_response, send_response, ace_reponse);
+      rates.tap = parseFloat(tap_response.rate);
+      rates.send = parseFloat(send_response.rate);
+      rates.ace = parseFloat(ace_reponse.rate);
     })
     .catch(error => {
       console.error(error);
