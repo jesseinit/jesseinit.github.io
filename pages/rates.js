@@ -10,7 +10,7 @@ export default function Rates() {
         const fetchDataFromApi = async () => {
             try {
                 const apiData = await fetchData();
-
+                console.log(apiData);
                 setData(apiData);
             } catch (error) {
                 console.error('Error fetching data:', error);
@@ -47,12 +47,14 @@ export default function Rates() {
                 <h2>For €1 you'll get the following rates</h2>
                 <section className="hero">
                     {loading ? (
-                        <div><p> Loading...</p></div>
+                        <div><p>Loading...</p></div>
                     ) : data && (
                         <div>
-                            <p><a href='https://send.flutterwave.com/'>Send: </a>{formatCurrency(data.send)}</p>
-                            <p><a href='https://www.taptapsend.com/'>TapTap: </a>{formatCurrency(data.tap)}</p>
-                            <p><a href='https://acemoneytransfer.com/referral-link/3056004'>AceTransfer: </a>{formatCurrency(data.ace)}</p>
+                            {data.map(item => (
+                                <p key={item.provider} className={item.bestRate ? 'best-rate' : ''}>
+                                    <a href={item.href}>{item.provider}: </a>{formatCurrency(item.rate)}
+                                </p>
+                            ))}
                         </div>
                     )}
                 </section>

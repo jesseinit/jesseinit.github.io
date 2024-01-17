@@ -3,7 +3,7 @@
 import { log } from 'console';
 
 export default async (req, res) => {
-  let rates = { send: "John Doe" };
+  let rates = [];
 
   var myHeaders = new Headers();
   myHeaders.append("authority", "api.taptapsend.com");
@@ -41,7 +41,10 @@ export default async (req, res) => {
   const tap_call = fetch("https://api.taptapsend.com/api/fxRates", requestOptions)
     .then((response) => response.json())
     .then((result) => {
-      return { "rate": result.availableCountries[1].corridors[29]["fxRate"], "provider": "tap" }
+      return {
+        "rate": result.availableCountries[1].corridors[29]["fxRate"],
+        "provider": "TapTap", "bestRate": false, "href": "https://www.taptapsend.com/"
+      }
     })
     .catch((error) => console.log("error", error));
 
@@ -68,7 +71,7 @@ export default async (req, res) => {
   const send_call = fetch("https://sendgateway.myflutterwave.com/api/v1/config/getcurrencyrate?fromCurrency=EUR&toCurrency=NGN", requestOptions)
     .then(response => response.json())
     .then(response => {
-      return { "rate": response.data[0].baseRate, "provider": "send" }
+      return { "rate": response.data[0].baseRate, "provider": "Send", "bestRate": false, "href": "https://send.flutterwave.com/" }
     })
     .catch(error => console.log('error', error));
 
@@ -83,26 +86,34 @@ export default async (req, res) => {
       }
       try {
         const parsed_rate = JSON.parse(stdout)
-        resolve({ "rate": parsed_rate.data.exchange_rate, "provider": "ace" });
+        resolve({ "rate": parsed_rate.data.exchange_rate, "provider": "Ace Transfer", "bestRate": false });
       } catch (parseError) {
         reject(parseError.message);
       }
     });
   }).then((result) => {
-    return { "rate": result.rate.toString(), "provider": "ace" }
+    return { "rate": result.rate, "provider": "Ace Transfer", "bestRate": false, "href": "https://acemoneytransfer.com/referral-link/3056004" }
   }
   ).catch((result) => "Could not get ace transfer rates")
 
   await Promise.all([ace_call, send_call, tap_call])
     .then(([ace_reponse, send_response, tap_response]) => {
-      console.log("tap_response, send_response, ace_reponse>>>", tap_response, send_response, ace_reponse);
-      rates.tap = parseFloat(tap_response.rate);
-      rates.send = parseFloat(send_response.rate);
-      rates.ace = parseFloat(ace_reponse.rate);
+      rates = [ace_reponse, send_response, tap_response]
     })
     .catch(error => {
       console.error(error);
     });
+
+
+  const maxRateIndex = rates.reduce((maxIndex, currentObject, currentIndex, array) => {
+    const currentRate = parseFloat(currentObject.rate);
+    const maxRate = parseFloat(array[maxIndex].rate);
+    return currentRate > maxRate ? currentIndex : maxIndex;
+  }, 0);
+
+  rates.forEach((object, index) => {
+    object.bestRate = index === maxRateIndex;
+  });
 
   return res.status(200).json(rates);
 
