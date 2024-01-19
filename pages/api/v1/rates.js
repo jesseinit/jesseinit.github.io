@@ -77,7 +77,23 @@ export default async (req, res) => {
 
   const { exec } = require('child_process');
 
-  const curlCommand = 'curl https://acemoneytransfer.com/make-request -H "authority: acemoneytransfer.com" -H "accept: */*" -H "accept-language: en-GB,en-US;q=0.9,en;q=0.8" -H "content-type: application/x-www-form-urlencoded; charset=UTF-8" -H "origin: https://acemoneytransfer.com" -H "referer: https://acemoneytransfer.com/Nigeria/Send-Money-to-Nigeria" -H \'sec-ch-ua: "Not_A Brand";v="8", "Chromium";v="120", "Google Chrome";v="120"\' -H "sec-ch-ua-mobile: ?0" -H \'sec-ch-ua-platform: "macOS"\' -H "sec-fetch-dest: empty" -H "sec-fetch-mode: cors" -H "sec-fetch-site: same-origin" -H "user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36" -H "x-requested-with: XMLHttpRequest" --data-raw "uri=rate%2Fcalculator&type=POST&data%5Bsrc_amount%5D=100&data%5Bdest_amount%5D=&data%5Buser_currency%5D=EUR&data%5Bcalculation_mode%5D=S&data%5Bdest_iso_numeric_code%5D=566&data%5Bsrc_iso_numeric_code%5D=528&data%5Bsepecific_payer_id%5D=1199&auth=true" --compressed';
+  const curlCommand = `curl 'https://acemoneytransfer.com/make-request' \
+    -H 'authority: acemoneytransfer.com' \
+    -H 'accept: */*' \
+    -H 'accept-language: en-GB,en-US;q=0.9,en;q=0.8' \
+    -H 'content-type: application/x-www-form-urlencoded; charset=UTF-8' \
+    -H 'origin: https://acemoneytransfer.com' \
+    -H 'referer: https://acemoneytransfer.com/Nigeria/Send-Money-to-Nigeria' \
+    -H 'sec-ch-ua: "Not_A Brand";v="8", "Chromium";v="120", "Google Chrome";v="120"' \
+    -H 'sec-ch-ua-mobile: ?0' \
+    -H 'sec-ch-ua-platform: "macOS"' \
+    -H 'sec-fetch-dest: empty' \
+    -H 'sec-fetch-mode: cors' \
+    -H 'sec-fetch-site: same-origin' \
+    -H 'user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36' \
+    -H 'x-requested-with: XMLHttpRequest' \
+    --data-raw 'uri=rate%2Fcalculator&type=POST&data%5Bsrc_amount%5D=100&data%5Bdest_amount%5D=&data%5Buser_currency%5D=EUR&data%5Bcalculation_mode%5D=S&data%5Bdest_iso_numeric_code%5D=566&data%5Bsrc_iso_numeric_code%5D=528'
+  `
 
   const ace_call = new Promise((resolve, reject) => {
     exec(curlCommand, (error, stdout, stderr) => {
@@ -86,15 +102,21 @@ export default async (req, res) => {
       }
       try {
         const parsed_rate = JSON.parse(stdout)
+        console.log("parsed_rate>>>", parsed_rate);
         resolve({ "rate": parsed_rate.data.exchange_rate, "provider": "Ace Transfer", "bestRate": false });
       } catch (parseError) {
+        console.log("parseError>>>", parseError);
         reject(parseError.message);
       }
     });
   }).then((result) => {
     return { "rate": result.rate, "provider": "Ace Transfer", "bestRate": false, "href": "https://acemoneytransfer.com/referral-link/3056004" }
   }
-  ).catch((result) => "Could not get ace transfer rates")
+  ).catch((result) => {
+    console.log("result>>>", result);
+    return { "rate": 0.00, "provider": "Ace Transfer", "bestRate": false, "href": "https://acemoneytransfer.com/referral-link/3056004" }
+  }
+  )
 
   await Promise.all([ace_call, send_call, tap_call])
     .then(([ace_reponse, send_response, tap_response]) => {
