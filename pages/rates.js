@@ -10,7 +10,6 @@ export default function Rates() {
         const fetchDataFromApi = async () => {
             try {
                 const apiData = await fetchData();
-                console.log(apiData);
                 setData(apiData);
             } catch (error) {
                 console.error('Error fetching data:', error);
