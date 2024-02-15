@@ -41,8 +41,9 @@ export default async (req, res) => {
   const tap_call = fetch("https://api.taptapsend.com/api/fxRates", requestOptions)
     .then((response) => response.json())
     .then((result) => {
+      const fxRate = result.availableCountries[1].corridors.find((corridors) => corridors.countryDisplayName == "Nigeria")
       return {
-        "rate": result.availableCountries[1].corridors[29]["fxRate"],
+        "rate": fxRate["fxRate"],
         "provider": "TapTap", "bestRate": false, "href": "https://www.taptapsend.com/"
       }
     })
@@ -71,7 +72,7 @@ export default async (req, res) => {
   const send_call = fetch("https://sendgateway.myflutterwave.com/api/v1/config/getcurrencyrate?fromCurrency=EUR&toCurrency=NGN", requestOptions)
     .then(response => response.json())
     .then(response => {
-      return { "rate": response.data[0].baseRate, "provider": "Send", "bestRate": false, "href": "https://send.flutterwave.com/" }
+      return { "rate": parseFloat(response.data[0].baseRate).toFixed(2), "provider": "Send", "bestRate": false, "href": "https://send.flutterwave.com/" }
     })
     .catch(error => console.log('error', error));
 
@@ -103,14 +104,14 @@ export default async (req, res) => {
       try {
         const parsed_rate = JSON.parse(stdout)
         console.log("parsed_rate>>>", parsed_rate);
-        resolve({ "rate": parsed_rate.data.exchange_rate, "provider": "Ace Transfer", "bestRate": false });
+        resolve({ "rate": parseFloat(parsed_rate.data.exchange_rate).toFixed(2), "provider": "Ace Transfer", "bestRate": false });
       } catch (parseError) {
         console.log("parseError>>>", parseError);
         reject(parseError.message);
       }
     });
   }).then((result) => {
-    return { "rate": result.rate, "provider": "Ace Transfer", "bestRate": false, "href": "https://acemoneytransfer.com/referral-link/3056004" }
+    return { "rate": parseFloat(result.rate).toFixed(2), "provider": "Ace Transfer", "bestRate": false, "href": "https://acemoneytransfer.com/referral-link/3056004" }
   }
   ).catch((result) => {
     console.log("result>>>", result);

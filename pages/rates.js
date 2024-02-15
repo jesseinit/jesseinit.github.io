@@ -48,10 +48,10 @@ export default function Rates() {
                     {loading ? (
                         <div><p>Loading...</p></div>
                     ) : data && (
-                        <div>
+                        <div className='currency__container'>
                             {data.map(item => (
                                 <p key={item.provider} className={item.bestRate ? 'best-rate' : ''}>
-                                    <a href={item.href}>{item.provider}: </a>{formatCurrency(item.rate)}
+                                    <a href={item.href}>{item.provider}:</a><span className='rate'>{formatCurrency(item.rate)}</span>
                                 </p>
                             ))}
                         </div>
