@@ -103,10 +103,8 @@ export default async (req, res) => {
       }
       try {
         const parsed_rate = JSON.parse(stdout)
-        console.log("parsed_rate>>>", parsed_rate);
         resolve({ "rate": parseFloat(parsed_rate.data.exchange_rate).toFixed(2), "provider": "Ace Transfer", "bestRate": false });
       } catch (parseError) {
-        console.log("parseError>>>", parseError);
         reject(parseError.message);
       }
     });
@@ -114,7 +112,6 @@ export default async (req, res) => {
     return { "rate": parseFloat(result.rate).toFixed(2), "provider": "Ace Transfer", "bestRate": false, "href": "https://acemoneytransfer.com/referral-link/3056004" }
   }
   ).catch((result) => {
-    console.log("result>>>", result);
     return { "rate": 0.00, "provider": "Ace Transfer", "bestRate": false, "href": "https://acemoneytransfer.com/referral-link/3056004" }
   }
   )
