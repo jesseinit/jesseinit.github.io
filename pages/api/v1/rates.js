@@ -116,9 +116,48 @@ export default async (req, res) => {
   }
   )
 
-  await Promise.all([ace_call, send_call, tap_call])
-    .then(([ace_reponse, send_response, tap_response]) => {
-      rates = [ace_reponse, send_response, tap_response]
+  const remitlyCurlCommand = `curl --location 'https://api.remitly.io/v5/pricing/estimates?amount=100.00%20EUR&anchor=SEND&conduit=NLD%3AEUR-NGA%3ANGN&purpose=OTHER' \
+  --header 'accept: application/json' \
+  --header 'accept-language: en, en;q=0.5' \
+  --header 'content-type: application/json' \
+  --header 'origin: https://www.remitly.com' \
+  --header 'priority: u=1, i' \
+  --header 'referer: https://www.remitly.com/' \
+  --header 'remitly-deviceenvironmentid: 3RoCMKdq1DauxuTShWkZhQpbQm6AKs0ALkUxILdiIWPuJfxDIokB1w0JII8kqhj1q8ZXWAPFoELwpTlRRKYfiwWoihvXkYcDCYnoACCVAASj' \
+  --header 'sec-ch-ua: "Chromium";v="124", "Google Chrome";v="124", "Not-A.Brand";v="99"' \
+  --header 'sec-ch-ua-mobile: ?0' \
+  --header 'sec-ch-ua-platform: "macOS"' \
+  --header 'sec-fetch-dest: empty' \
+  --header 'sec-fetch-mode: cors' \
+  --header 'sec-fetch-site: cross-site' \
+  --header 'user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36' \
+  --header 'x-remitly-perf-reqsize: 0' \
+  --header 'x-remitly-perf-starttime: 1714932144397'
+  `
+
+  const remitly_call = new Promise((resolve, reject) => {
+    exec(remitlyCurlCommand, (error, stdout, stderr) => {
+      if (error) {
+        reject(`Error: ${error.message}`);
+      }
+      try {
+        const parsed_rate = JSON.parse(stdout)
+        resolve({ "rate": parsed_rate[0].exchange_rate_info.base_rate});
+      } catch (parseError) {
+        reject(parseError.message);
+      }
+    });
+  }).then((result) => {
+    return { "rate": parseFloat(result.rate).toFixed(2), "provider": "Remitly", "bestRate": false, "href": "https://remit.ly/94fqcne9" }
+  }
+  ).catch((result) => {
+    return { "rate": 0.00, "provider": "Ace Transfer", "bestRate": false, "href": "https://remit.ly/94fqcne9" }
+  }
+  )
+
+  await Promise.all([ace_call, send_call, tap_call, remitly_call])
+    .then(([ace_reponse, send_response, tap_response, remitly_response]) => {
+      rates = [ace_reponse, send_response, tap_response,remitly_response]
     })
     .catch(error => {
       console.error(error);
