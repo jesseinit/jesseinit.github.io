@@ -105,6 +105,7 @@ export default async (req, res) => {
         const parsed_rate = JSON.parse(stdout)
         resolve({ "rate": parseFloat(parsed_rate.data.exchange_rate).toFixed(2), "provider": "Ace Transfer", "bestRate": false });
       } catch (parseError) {
+        console.log("curl_ace_call_exceptions>>>>", parseError)
         reject(parseError.message);
       }
     });
@@ -112,6 +113,7 @@ export default async (req, res) => {
     return { "rate": parseFloat(result.rate).toFixed(2), "provider": "Ace Transfer", "bestRate": false, "href": "https://acemoneytransfer.com/referral-link/3056004" }
   }
   ).catch((result) => {
+    console.log("ace_call_exceptions>>>>", result)
     return { "rate": 0.00, "provider": "Ace Transfer", "bestRate": false, "href": "https://acemoneytransfer.com/referral-link/3056004" }
   }
   )
@@ -174,6 +176,7 @@ export default async (req, res) => {
     object.bestRate = index === maxRateIndex;
   });
 
+  res.setHeader('Cache-Control', 's-maxage=86400')
   return res.status(200).json(rates);
 
 };
