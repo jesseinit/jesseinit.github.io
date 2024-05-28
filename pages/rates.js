@@ -1,6 +1,6 @@
-import Head from 'next/head';
-import { useEffect, useState } from 'react';
-import { fetchData } from '../utils/api';
+import Head from "next/head";
+import { useEffect, useState } from "react";
+import { fetchData } from "../utils/api";
 
 export default function Rates() {
     const [data, setData] = useState(null);
@@ -12,7 +12,7 @@ export default function Rates() {
                 const apiData = await fetchData();
                 setData(apiData);
             } catch (error) {
-                console.error('Error fetching data:', error);
+                console.error("Error fetching data:", error);
             } finally {
                 setLoading(false); // Set loading to false regardless of success or error
             }
@@ -22,9 +22,9 @@ export default function Rates() {
     }, []);
 
     const formatCurrency = (value) => {
-        return new Intl.NumberFormat('en-NG', {
-            style: 'currency',
-            currency: 'NGN',
+        return new Intl.NumberFormat("en-NG", {
+            style: "currency",
+            currency: "NGN",
         }).format(value);
     };
 
@@ -46,18 +46,30 @@ export default function Rates() {
                 <h2>For €1 you'll get the following rates</h2>
                 <section className="hero">
                     {loading ? (
-                        <div><p>Loading...</p></div>
-                    ) : data && (
-                        <div className='currency__container'>
-                            {data.map(item => (
-                                <p key={item.provider} className={item.bestRate ? 'best-rate' : ''}>
-                                    <a href={item.href}>{item.provider}:</a><span className='rate'>{formatCurrency(item.rate)}</span>
-                                </p>
-                            ))}
+                        <div>
+                            <p>Loading...</p>
                         </div>
+                    ) : (
+                        data && (
+                            <div className="currency__container">
+                                {data.map((item) => (
+                                    <p
+                                        key={item.provider}
+                                        className={
+                                            item.bestRate ? "best-rate" : ""
+                                        }
+                                    >
+                                        <a href={item.href}>{item.provider}:</a>
+                                        <span className="rate">
+                                            {formatCurrency(item.rate)}
+                                        </span>
+                                    </p>
+                                ))}
+                            </div>
+                        )
                     )}
                 </section>
             </main>
-        </div >
+        </div>
     );
 }
