@@ -32,22 +32,22 @@ export default function Home() {
               </a>
             </section>
             <p className="hero__description">
-              I'm a software engineer based in Amsterdam, Netherlands and curently focused in building and scalling
+              I'm a software engineer based in Amsterdam, Netherlands and currently focused in building and scaling
               software backends. Creating impact, team-work and continuous learning are some of my core
               tenets and I continuously adapt these in solving customers problems when I build
               software.
             </p>
 
             <p className="hero__description">
-              In the last 4+ years I've been building services and products in the finance, ecommerce
-              and health space, enriching lifes using technologies like Python(Django, Flask,
+              In the last 5 years I've been building services and products in the finance, ecommerce
+              and logistics domain, enriching lives using technologies like Python(Django,
               FastAPI), Javascript(React, Node.js), PostgreSQL, Docker, Redis, Kubernetes etc.
             </p>
 
             <p className="hero__description">
               I'm constantly looking for challenging and impactful opportunities so can always shoot
               me an{' '}
-              <a className="text-underline" href="mailto:jesse.egbosionu@gmail.com">
+              <a className="text-underline email-cta" href="mailto:me@jesseinit.dev">
                 email
               </a>
               .
@@ -62,8 +62,8 @@ export default function Home() {
         </section>
       </main>
       <footer className="footer">
-        <p className="text-align-center">Made with ❤️ and Vibes</p>
+        <p className="text-align-center">Made with <span style={{ "color": "red" }}>❤️</span> and Vibes</p>
       </footer>
-    </div>
+    </div >
   );
 }

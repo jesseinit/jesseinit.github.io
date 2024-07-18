@@ -97,7 +97,7 @@ a {
 
   &__description {
     font-size: 1em;
-    margin-bottom: 40px;
+    margin-bottom: 20px;
     line-height: 1.5;
   }
 
@@ -129,6 +129,14 @@ a {
   & span {
     margin-left: 5px;
   }
+}
+
+.email-cta {
+  display: inline-block;
+  background: rgb(0, 119, 255);
+  padding: 2px 5px;
+  border-radius: 10%;
+  color: #fff;
 }
 
 .footer {

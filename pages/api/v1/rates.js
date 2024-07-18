@@ -1,6 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 
-import { log } from "console";
+import { error, log } from "console";
 
 const { exec } = require("child_process");
 
@@ -174,21 +174,30 @@ export default async (req, res) => {
 		`;
 
     const remitly_call = new Promise((resolve, reject) => {
-        exec(remitlyCurlCommand, (error, stdout, stderr) => {
-            if (error) {
-                reject(`Error: ${error.message}`);
-            }
-            try {
-                const parsed_rate = JSON.parse(stdout);
-                resolve({ rate: parsed_rate[0].exchange_rate_info.base_rate });
-            } catch (parseError) {
-                reject(parseError.message);
-            }
-        });
+        fetch("https://api.remitly.io/v2/calculator/estimate?conduit=NLD%3AEUR-NGA%3ANGN&anchor=SEND&amount=100+EUR&purpose=OTHER&strict_promo=false", {
+            "headers": {
+                "accept": "application/json",
+                "accept-language": "en-GB,en;q=0.9,nl-NL;q=0.8,nl;q=0.7,en-US;q=0.6",
+                "priority": "u=1, i",
+                "remitly-deviceenvironmentid": "3RoCMKdq1DauxuTShWkZhQpbQm6AKs0ALkUxILdiIWPuJfxDIokB1w0JII8kqhj1q8ZXWAPFoELwpTlRRKYfiwWoihvXkYcDCYnoACCVAASj",
+                "sec-ch-ua": "\"Not/A)Brand\";v=\"8\", \"Chromium\";v=\"126\", \"Google Chrome\";v=\"126\"",
+                "sec-ch-ua-mobile": "?0",
+                "sec-ch-ua-platform": "\"macOS\"",
+                "sec-fetch-dest": "empty",
+                "sec-fetch-mode": "cors",
+                "sec-fetch-site": "cross-site"
+            },
+            "referrerPolicy": "no-referrer",
+            "body": null,
+            "method": "GET",
+            "mode": "cors",
+            "credentials": "omit"
+        }).then(result => resolve(result.json())).catch(error => reject(error));
     })
         .then((result) => {
+            console.log("Remitly<<<<<<<", result)
             return {
-                rate: parseFloat(result.rate).toFixed(2),
+                rate: parseFloat(result[0].base_rate).toFixed(2),
                 provider: "Remitly",
                 bestRate: false,
                 href: "https://remit.ly/94fqcne9",
@@ -218,18 +227,13 @@ export default async (req, res) => {
     myHeaders.append("sec-fetch-site", "cross-site");
     myHeaders.append("user-agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36");
 
-    const nalaRequestOptions = {
-        method: "GET",
-        headers: nalaHeaders,
-        redirect: "follow"
-    };
-
-
-
     const nalaCall = new Promise((resolve, reject) => {
-        fetch("https://partners-api.prod.nala-api.com/v1/fx/rates", nalaRequestOptions)
-            .then((response) => response.json())
-            .then((result) => resolve(result))
+        fetch("https://partners-api.prod.nala-api.com/v1/fx/rates", {
+            method: "GET",
+            headers: nalaHeaders,
+            redirect: "follow"
+        })
+            .then((response) => resolve(response.json()))
             .catch((error) => reject(error));
     })
         .then((result) => {
