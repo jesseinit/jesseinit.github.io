@@ -1,7 +1,4 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-
-import { error, log } from "console";
-
 const { exec } = require("child_process");
 
 export default async (req, res) => {
@@ -99,7 +96,7 @@ export default async (req, res) => {
         })
         .catch((error) => console.log("error", error));
 
-    const curlCommand = `curl 'https://acemoneytransfer.com/make-request' \
+    const curlCommand = `curl -v 'https://acemoneytransfer.com/make-request' \
     -H 'authority: acemoneytransfer.com' \
     -H 'accept: */*' \
     -H 'accept-language: en-GB,en-US;q=0.9,en;q=0.8' \
@@ -122,16 +119,15 @@ export default async (req, res) => {
             if (error) {
                 reject(`Error: ${error.message}`);
             }
+            exec("curl --version", (error, stdout, stderr) => console.log(`Curl Version ${stdout}`))
             try {
                 const parsed_rate = JSON.parse(stdout);
-                console.log("Parsed Ace Rate>>>>", parsed_rate)
                 resolve({
                     rate: parseFloat(parsed_rate.data.exchange_rate).toFixed(2),
                     provider: "Ace Transfer",
                     bestRate: false,
                 });
             } catch (parseError) {
-                console.log("Ace Exception>>>>", parseError)
                 reject(parseError.message);
             }
         });
@@ -144,8 +140,8 @@ export default async (req, res) => {
                 href: "https://acemoneytransfer.com/referral-link/3056004",
             };
         })
-        .catch((result) => {
-            console.log("ace_call_exceptions>>>>", result);
+        .catch((error) => {
+            console.error("Error Calling Ace>>>", error);
             return {
                 rate: 0.0,
                 provider: "Ace Transfer",
@@ -153,25 +149,6 @@ export default async (req, res) => {
                 href: "https://acemoneytransfer.com/referral-link/3056004",
             };
         });
-
-    const remitlyCurlCommand = `curl --location 'https://api.remitly.io/v5/pricing/estimates?amount=100.00%20EUR&anchor=SEND&conduit=NLD%3AEUR-NGA%3ANGN&purpose=OTHER' \
-		--header 'accept: application/json' \
-		--header 'accept-language: en, en;q=0.5' \
-		--header 'content-type: application/json' \
-		--header 'origin: https://www.remitly.com' \
-		--header 'priority: u=1, i' \
-		--header 'referer: https://www.remitly.com/' \
-		--header 'remitly-deviceenvironmentid: 3RoCMKdq1DauxuTShWkZhQpbQm6AKs0ALkUxILdiIWPuJfxDIokB1w0JII8kqhj1q8ZXWAPFoELwpTlRRKYfiwWoihvXkYcDCYnoACCVAASj' \
-		--header 'sec-ch-ua: "Chromium";v="124", "Google Chrome";v="124", "Not-A.Brand";v="99"' \
-		--header 'sec-ch-ua-mobile: ?0' \
-		--header 'sec-ch-ua-platform: "macOS"' \
-		--header 'sec-fetch-dest: empty' \
-		--header 'sec-fetch-mode: cors' \
-		--header 'sec-fetch-site: cross-site' \
-		--header 'user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36' \
-		--header 'x-remitly-perf-reqsize: 0' \
-		--header 'x-remitly-perf-starttime: 1714932144397'
-		`;
 
     const remitly_call = new Promise((resolve, reject) => {
         fetch("https://api.remitly.io/v2/calculator/estimate?conduit=NLD%3AEUR-NGA%3ANGN&anchor=SEND&amount=100+EUR&purpose=OTHER&strict_promo=false", {
@@ -195,7 +172,7 @@ export default async (req, res) => {
         }).then(result => resolve(result.json())).catch(error => reject(error));
     })
         .then((result) => {
-            console.log("Remitly<<<<<<<", result)
+            // console.log("Remitly<<<<<<<", result)
             return {
                 rate: parseFloat(result[0].base_rate).toFixed(2),
                 provider: "Remitly",
@@ -204,7 +181,7 @@ export default async (req, res) => {
             };
         })
         .catch((error) => {
-            console.error("Error Calling Ace>>>", error);
+            console.error("Error Calling Remitly>>>", error);
             return {
                 rate: 0.0,
                 provider: "Ace Transfer",
@@ -237,7 +214,7 @@ export default async (req, res) => {
             .catch((error) => reject(error));
     })
         .then((result) => {
-            console.log("NALA<<<<<<<", result)
+            // console.log("NALA<<<<<<<", result)
             return {
                 rate: parseFloat(result.data[5].rate).toFixed(2),
                 provider: "Nala",
@@ -295,6 +272,8 @@ export default async (req, res) => {
     rates.forEach((object, index) => {
         object.bestRate = index === maxRateIndex;
     });
+
+    rates = rates.filter(rate => rate.rate > 0)
 
     return res.status(200).json(rates);
 };
