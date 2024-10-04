@@ -151,18 +151,9 @@ export default async (req, res) => {
         });
 
     const remitly_call = new Promise((resolve, reject) => {
-        fetch("https://api.remitly.io/v2/calculator/estimate?conduit=NLD%3AEUR-NGA%3ANGN&anchor=SEND&amount=100+EUR&purpose=OTHER&strict_promo=false", {
+        fetch("https://api.remitly.io/v5/pricing/estimates?amount=1000.00%20EUR&anchor=SEND&conduit=NLD%3AEUR-NGA%3ANGN&purpose=OTHER", {
             "headers": {
                 "accept": "application/json",
-                "accept-language": "en-GB,en;q=0.9,nl-NL;q=0.8,nl;q=0.7,en-US;q=0.6",
-                "priority": "u=1, i",
-                "remitly-deviceenvironmentid": "3RoCMKdq1DauxuTShWkZhQpbQm6AKs0ALkUxILdiIWPuJfxDIokB1w0JII8kqhj1q8ZXWAPFoELwpTlRRKYfiwWoihvXkYcDCYnoACCVAASj",
-                "sec-ch-ua": "\"Not/A)Brand\";v=\"8\", \"Chromium\";v=\"126\", \"Google Chrome\";v=\"126\"",
-                "sec-ch-ua-mobile": "?0",
-                "sec-ch-ua-platform": "\"macOS\"",
-                "sec-fetch-dest": "empty",
-                "sec-fetch-mode": "cors",
-                "sec-fetch-site": "cross-site"
             },
             "referrerPolicy": "no-referrer",
             "body": null,
@@ -174,7 +165,7 @@ export default async (req, res) => {
         .then((result) => {
             // console.log("Remitly<<<<<<<", result)
             return {
-                rate: parseFloat(result[0].base_rate).toFixed(2),
+                rate: parseFloat(result[0].exchange_rate_info.base_rate).toFixed(2),
                 provider: "Remitly",
                 bestRate: false,
                 href: "https://remit.ly/94fqcne9",
