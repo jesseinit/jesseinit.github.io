@@ -26,12 +26,9 @@ export default async (req, res) => {
     );
     myHeaders.append("x-device-id", "web");
     myHeaders.append("x-device-model", "web");
-    myHeaders.append(
-        "Cookie",
-        "SESSION=NTI4ZGZmOGEtZGZkNS00ZGUwLWE2MmYtMDA4OWNjZGZlZjkx"
-    );
+    myHeaders.append("Cookie", "SESSION=NTI4ZGZmOGEtZGZkNS00ZGUwLWE2MmYtMDA4OWNjZGZlZjkx");
 
-    var requestOptions = {
+    var taptapRequestOptions = {
         method: "GET",
         headers: myHeaders,
         redirect: "follow",
@@ -39,13 +36,16 @@ export default async (req, res) => {
 
     const tap_call = fetch(
         "https://api.taptapsend.com/api/fxRates",
-        requestOptions
+        taptapRequestOptions
     )
         .then((response) => response.json())
         .then((result) => {
             const fxRate = result.availableCountries[1].corridors.find(
-                (corridors) => corridors.countryDisplayName == "Nigeria"
+                (corridors) => {
+                    return corridors.countryDisplayName == "Nigeria"
+                }
             );
+
             return {
                 rate: fxRate["fxRate"],
                 provider: "TapTap",
@@ -53,7 +53,14 @@ export default async (req, res) => {
                 href: "https://www.taptapsend.com/",
             };
         })
-        .catch((error) => console.log("error", error));
+        .catch((error) => {
+            return {
+                rate: 0,
+                provider: "TapTap",
+                bestRate: false,
+                href: "https://www.taptapsend.com/",
+            }
+        });
 
     var myHeaders = new Headers();
     myHeaders.append("authority", "sendgateway.myflutterwave.com");
@@ -151,7 +158,7 @@ export default async (req, res) => {
         });
 
     const remitly_call = new Promise((resolve, reject) => {
-        fetch("https://api.remitly.io/v5/pricing/estimates?amount=1000.00%20EUR&anchor=SEND&conduit=NLD%3AEUR-NGA%3ANGN&purpose=OTHER", {
+        fetch("https://api.remitly.io/v5/pricing/estimates?amount=1%20EUR&anchor=SEND&conduit=NLD%3AEUR-NGA%3ANGN&purpose=OTHER", {
             "headers": {
                 "accept": "application/json",
             },
@@ -182,18 +189,18 @@ export default async (req, res) => {
         });
 
     const nalaHeaders = new Headers();
-    myHeaders.append("accept", "*/*");
-    myHeaders.append("accept-language", "en-GB,en;q=0.9,nl-NL;q=0.8,nl;q=0.7,en-US;q=0.6");
-    myHeaders.append("origin", "https://www.nala.com");
-    myHeaders.append("priority", "u=1, i");
-    myHeaders.append("referer", "https://www.nala.com/");
-    myHeaders.append("sec-ch-ua", "\"Not/A)Brand\";v=\"8\", \"Chromium\";v=\"126\", \"Google Chrome\";v=\"126\"");
-    myHeaders.append("sec-ch-ua-mobile", "?0");
-    myHeaders.append("sec-ch-ua-platform", "\"macOS\"");
-    myHeaders.append("sec-fetch-dest", "empty");
-    myHeaders.append("sec-fetch-mode", "cors");
-    myHeaders.append("sec-fetch-site", "cross-site");
-    myHeaders.append("user-agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36");
+    nalaHeaders.append("accept", "*/*");
+    nalaHeaders.append("accept-language", "en-GB,en;q=0.9,nl-NL;q=0.8,nl;q=0.7,en-US;q=0.6");
+    nalaHeaders.append("origin", "https://www.nala.com");
+    nalaHeaders.append("priority", "u=1, i");
+    nalaHeaders.append("referer", "https://www.nala.com/");
+    nalaHeaders.append("sec-ch-ua", "\"Not/A)Brand\";v=\"8\", \"Chromium\";v=\"126\", \"Google Chrome\";v=\"126\"");
+    nalaHeaders.append("sec-ch-ua-mobile", "?0");
+    nalaHeaders.append("sec-ch-ua-platform", "\"macOS\"");
+    nalaHeaders.append("sec-fetch-dest", "empty");
+    nalaHeaders.append("sec-fetch-mode", "cors");
+    nalaHeaders.append("sec-fetch-site", "cross-site");
+    nalaHeaders.append("user-agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36");
 
     const nalaCall = new Promise((resolve, reject) => {
         fetch("https://partners-api.prod.nala-api.com/v1/fx/rates", {
