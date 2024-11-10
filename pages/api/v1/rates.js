@@ -212,9 +212,14 @@ export default async (req, res) => {
             .catch((error) => reject(error));
     })
         .then((result) => {
-            // console.log("NALA<<<<<<<", result)
+            const nalaRates = result.data.find(
+                (data) => {
+                    return data.source_currency == "EUR" && data.destination_currency === "NGN"
+                }
+            )
+            // console.log("NALA<<<<<<<", nalaRates)
             return {
-                rate: parseFloat(result.data[5].rate).toFixed(2),
+                rate: parseFloat(nalaRates.rate).toFixed(2),
                 provider: "Nala",
                 bestRate: false,
                 href: "https://join.iwantnala.com/JESSE-715106",
