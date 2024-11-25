@@ -214,7 +214,7 @@ export default async (req, res) => {
         .then((result) => {
             const nalaRates = result.data.find(
                 (data) => {
-                    return data.source_currency == "EUR" && data.destination_currency === "NGN"
+                    return data.source_currency === "EUR" && data.destination_currency === "NGN" && data.provider_name === "nala"
                 }
             )
             // console.log("NALA<<<<<<<", nalaRates)
