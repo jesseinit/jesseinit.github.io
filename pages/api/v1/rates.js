@@ -40,14 +40,23 @@ export default async (req, res) => {
     )
         .then((response) => response.json())
         .then((result) => {
-            const fxRate = result.availableCountries[1].corridors.find(
-                (corridors) => {
-                    return corridors.countryDisplayName == "Nigeria"
-                }
+            const nlRates = result.availableCountries.find((availableCountry) => {
+                return availableCountry.isoCountryCode == "NL"
+            }
             );
+            let fxRate = 0
+            if (nlRates) {
+                for (let corrridor of nlRates.corridors) {
+                    if (corrridor["isoCountryCode"] === "NG") {
+                        fxRate = corrridor["fxRate"]
+                        break
+                    };
+                }
+            }
+
 
             return {
-                rate: fxRate["fxRate"],
+                rate: fxRate,
                 provider: "TapTap",
                 bestRate: false,
                 href: "https://www.taptapsend.com/",
