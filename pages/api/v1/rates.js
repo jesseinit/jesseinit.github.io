@@ -53,8 +53,6 @@ export default async (req, res) => {
                     };
                 }
             }
-
-
             return {
                 rate: fxRate,
                 provider: "TapTap",
@@ -244,12 +242,98 @@ export default async (req, res) => {
             };
         });
 
+
+    const lemfiCall = new Promise((resolve, reject) => {
+        fetch("https://lemfi.com/api/lemonade/v2/exchange", {
+            "headers": {
+                "accept": "application/json",
+                "accept-language": "en-GB,en;q=0.9,nl-NL;q=0.8,nl;q=0.7,en-US;q=0.6",
+                "content-type": "application/json",
+                "priority": "u=1, i",
+                "sec-ch-ua": "\"Not(A:Brand\";v=\"99\", \"Google Chrome\";v=\"133\", \"Chromium\";v=\"133\"",
+                "sec-ch-ua-mobile": "?0",
+                "sec-ch-ua-platform": "\"macOS\"",
+                "sec-fetch-dest": "empty",
+                "sec-fetch-mode": "cors",
+                "sec-fetch-site": "same-origin"
+            },
+            "referrer": "https://lemfi.com/",
+            "referrerPolicy": "origin",
+            "body": "{\"from\":\"EUR\",\"to\":\"NGN\"}",
+            "method": "POST",
+            "mode": "cors",
+            "credentials": "include"
+        }).then((response) => resolve(response.json()))
+            .catch((error) => reject(error));
+    }).then((result) => {
+        return {
+            rate: parseFloat(result.data.rate).toFixed(2),
+            provider: "Lemfi",
+            bestRate: false,
+            href: "https://join.iwantnala.com/JESSE-715106",
+        };
+    })
+        .catch((error) => {
+            console.error("Error Calling Lemfi>>>", error);
+            return {
+                rate: 0.0,
+                provider: "Lemfi",
+                bestRate: false,
+                href: "https://join.iwantnala.com/JESSE-715106",
+            };
+        });
+
+    const wiseCall = new Promise((resolve, reject) => {
+        fetch("https://api.wise.com/v1/rates?source=EUR&target=NGN", {
+            "headers": {
+                "accept": "*/*",
+                "accept-language": "en-GB,en;q=0.9,nl-NL;q=0.8,nl;q=0.7,en-US;q=0.6",
+                "authorization": "Basic OGNhN2FlMjUtOTNjNS00MmFlLThhYjQtMzlkZTFlOTQzZDEwOjliN2UzNmZkLWRjYjgtNDEwZS1hYzc3LTQ5NGRmYmEyZGJjZA==",
+                "content-type": "application/json",
+                "priority": "u=1, i",
+                "sec-ch-ua": "\"Not(A:Brand\";v=\"99\", \"Google Chrome\";v=\"133\", \"Chromium\";v=\"133\"",
+                "sec-ch-ua-mobile": "?0",
+                "sec-ch-ua-platform": "\"macOS\"",
+                "sec-fetch-dest": "empty",
+                "sec-fetch-mode": "cors",
+                "sec-fetch-site": "same-site"
+            },
+            "referrer": "https://wise.com/",
+            "referrerPolicy": "strict-origin-when-cross-origin",
+            "body": null,
+            "method": "GET",
+            "mode": "cors",
+            "credentials": "include"
+        }).then((response) => resolve(response.json()))
+            .catch((error) => reject(error));
+    }).then((result) => {
+        console.log("result>>wise", result);
+
+        return {
+            rate: (parseFloat(result[0].rate) * 0.972).toFixed(2),
+            provider: "Wise(after fees)",
+            bestRate: false,
+            href: "https://wise.com/invite/dic/obinnae93",
+        };
+    })
+        .catch((error) => {
+            console.error("Error Calling Wise>>>", error);
+            return {
+                rate: 0.0,
+                provider: "Wise",
+                bestRate: false,
+                href: "https://wise.com/invite/dic/obinnae93",
+            };
+        });
+
     await Promise.all([
         ace_call,
         send_call,
         tap_call,
         remitly_call,
         nalaCall,
+        lemfiCall,
+        wiseCall
     ])
         .then(
             ([
@@ -258,6 +342,8 @@ export default async (req, res) => {
                 tap_response,
                 remitly_response,
                 nala_response,
+                lemfi_response,
+                wiseCall_response
             ]) => {
                 rates = [
                     ace_reponse,
@@ -265,6 +351,8 @@ export default async (req, res) => {
                     tap_response,
                     remitly_response,
                     nala_response,
+                    lemfi_response,
+                    wiseCall_response
                 ];
             }
         )
