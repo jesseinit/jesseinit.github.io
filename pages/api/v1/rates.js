@@ -268,18 +268,18 @@ export default async (req, res) => {
     }).then((result) => {
         return {
             rate: parseFloat(result.data.rate).toFixed(2),
-            provider: "Lemfi",
+            provider: "Lemfi(referal code - OBIN6518)",
             bestRate: false,
-            href: "https://join.iwantnala.com/JESSE-715106",
+            href: "https://lemfi.com",
         };
     })
         .catch((error) => {
             console.error("Error Calling Lemfi>>>", error);
             return {
                 rate: 0.0,
-                provider: "Lemfi",
+                provider: "Lemfi(referal code - OBIN6518)",
                 bestRate: false,
-                href: "https://join.iwantnala.com/JESSE-715106",
+                href: "https://lemfi.com",
             };
         });
 
