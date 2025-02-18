@@ -308,10 +308,9 @@ export default async (req, res) => {
             .catch((error) => reject(error));
     }).then((result) => {
         console.log("result>>wise", result);
-
         return {
-            rate: (parseFloat(result[0].rate) * 0.972).toFixed(2),
-            provider: "Wise(after fees)",
+            rate: parseFloat(result[0].rate).toFixed(2),
+            provider: "Wise",
             bestRate: false,
             href: "https://wise.com/invite/dic/obinnae93",
         };
