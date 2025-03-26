@@ -266,8 +266,12 @@ export default async (req, res) => {
         }).then((response) => resolve(response.json()))
             .catch((error) => reject(error));
     }).then((result) => {
+        if (result.data.rate > 4000) {
+            throw new Error(`Lemfi rate is too high because WTH is ${result.data.rate}`,);
+        }
         return {
-            rate: parseFloat(result.data.rate).toFixed(2),
+            // rate: parseFloat(Math.floor(result.data.rate % 10000)).toFixed(2),
+            rate: Math.floor(result.data.rate % 10000),
             provider: "Lemfi(referal code - OBIN6518)",
             bestRate: false,
             href: "https://lemfi.com",
@@ -284,11 +288,10 @@ export default async (req, res) => {
         });
 
     const wiseCall = new Promise((resolve, reject) => {
-        fetch("https://api.wise.com/v1/rates?source=EUR&target=NGN", {
+        fetch("https://wise.com/gateway/v4/comparisons?payInMethod=BANK_TRANSFER&sendAmount=10&sourceCurrency=EUR&targetCurrency=NGN", {
             "headers": {
                 "accept": "*/*",
                 "accept-language": "en-GB,en;q=0.9,nl-NL;q=0.8,nl;q=0.7,en-US;q=0.6",
-                "authorization": "Basic OGNhN2FlMjUtOTNjNS00MmFlLThhYjQtMzlkZTFlOTQzZDEwOjliN2UzNmZkLWRjYjgtNDEwZS1hYzc3LTQ5NGRmYmEyZGJjZA==",
                 "content-type": "application/json",
                 "priority": "u=1, i",
                 "sec-ch-ua": "\"Not(A:Brand\";v=\"99\", \"Google Chrome\";v=\"133\", \"Chromium\";v=\"133\"",
@@ -304,30 +307,35 @@ export default async (req, res) => {
             "method": "GET",
             "mode": "cors",
             "credentials": "include"
-        }).then((response) => resolve(response.json()))
-            .catch((error) => reject(error));
+        }).then((response) => {
+            return resolve(response.json())
+        }).catch((error) => reject(error));
     }).then((result) => {
-        console.log("result>>wise", result);
-        return {
-            rate: parseFloat(result[0].rate).toFixed(2),
-            provider: "Wise",
-            bestRate: false,
-            href: "https://wise.com/invite/dic/obinnae93",
-        };
-    })
-        .catch((error) => {
-            console.error("Error Calling Wise>>>", error);
+        const wiseProvider = result.providers.find(provider => provider.alias === "wise");
+        if (wiseProvider && wiseProvider.quotes.length > 0) {
+            const wiseQuote = wiseProvider.quotes[0];
             return {
-                rate: 0.0,
+                rate: parseFloat(wiseQuote.rate).toFixed(2),
                 provider: "Wise",
                 bestRate: false,
                 href: "https://wise.com/invite/dic/obinnae93",
             };
-        });
+        } else {
+            throw new Error("Wise provider or quotes not found");
+        }
+    }).catch((error) => {
+        console.error("Error Calling Wise>>>", error);
+        return {
+            rate: 0.0,
+            provider: "Wise",
+            bestRate: false,
+            href: "https://wise.com/invite/dic/obinnae93",
+        };
+    });
 
     await Promise.all([
         ace_call,
-        send_call,
+        // send_call,
         tap_call,
         remitly_call,
         nalaCall,
@@ -337,7 +345,7 @@ export default async (req, res) => {
         .then(
             ([
                 ace_reponse,
-                send_response,
+                // send_response,
                 tap_response,
                 remitly_response,
                 nala_response,
@@ -346,7 +354,7 @@ export default async (req, res) => {
             ]) => {
                 rates = [
                     ace_reponse,
-                    send_response,
+                    // send_response,
                     tap_response,
                     remitly_response,
                     nala_response,
