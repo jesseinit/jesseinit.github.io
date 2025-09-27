@@ -1,56 +1,100 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 const { exec } = require("child_process");
+
+const COMMON_HEADERS = {
+    'accept': '*/*',
+    'accept-language': 'en-GB,en-US;q=0.9,en;q=0.8',
+    'sec-ch-ua-mobile': '?0',
+    'sec-ch-ua-platform': '"macOS"',
+    'sec-fetch-dest': 'empty',
+    'sec-fetch-mode': 'cors',
+    'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36'
+};
+
+const createTapTapHeaders = () => {
+    const headers = new Headers();
+    Object.entries(COMMON_HEADERS).forEach(([key, value]) => headers.append(key, value));
+    headers.append('authority', 'api.taptapsend.com');
+    headers.append('appian-version', 'web/2022-05-03.0');
+    headers.append('origin', 'https://www.taptapsend.com');
+    headers.append('referer', 'https://www.taptapsend.com/');
+    headers.append('sec-ch-ua', '"Google Chrome";v="119", "Chromium";v="119", "Not?A_Brand";v="24"');
+    headers.append('sec-fetch-site', 'same-site');
+    headers.append('x-device-id', 'web');
+    headers.append('x-device-model', 'web');
+    headers.append('Cookie', 'SESSION=NTI4ZGZmOGEtZGZkNS00ZGUwLWE2MmYtMDA4OWNjZGZlZjkx');
+    return headers;
+};
+
+const createFlutterwaveHeaders = () => {
+    const headers = new Headers();
+    Object.entries(COMMON_HEADERS).forEach(([key, value]) => headers.append(key, value));
+    headers.append('authority', 'sendgateway.myflutterwave.com');
+    headers.append('accept', 'application/json, text/plain, */*');
+    headers.append('origin', 'https://send.flutterwave.com');
+    headers.append('referer', 'https://send.flutterwave.com/');
+    headers.append('sec-ch-ua', '"Not.A/Brand";v="8", "Chromium";v="114", "Google Chrome";v="114"');
+    headers.append('sec-fetch-site', 'cross-site');
+    headers.append('user-agent', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36');
+    return headers;
+};
+
+const createNalaHeaders = () => {
+    const headers = new Headers();
+    Object.entries(COMMON_HEADERS).forEach(([key, value]) => headers.append(key, value));
+    headers.append('accept-language', 'en-GB,en;q=0.9,nl-NL;q=0.8,nl;q=0.7,en-US;q=0.6');
+    headers.append('origin', 'https://www.nala.com');
+    headers.append('priority', 'u=1, i');
+    headers.append('referer', 'https://www.nala.com/');
+    headers.append('sec-ch-ua', '"Not/A)Brand";v="8", "Chromium";v="126", "Google Chrome";v="126"');
+    headers.append('sec-fetch-site', 'cross-site');
+    headers.append('user-agent', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36');
+    return headers;
+};
+
+const createAfriexHeaders = () => {
+    const headers = new Headers();
+    Object.entries(COMMON_HEADERS).forEach(([key, value]) => headers.append(key, value));
+    headers.append('accept-language', 'en-GB,en;q=0.9,nl-NL;q=0.8,nl;q=0.7,en-US;q=0.6');
+    headers.append('if-none-match', 'W/"acc-nnqCARN36oEAk9YJsCdpfbMyZVQ"');
+    headers.append('origin', 'https://www.afriex.com');
+    headers.append('priority', 'u=1, i');
+    headers.append('referer', 'https://www.afriex.com/');
+    headers.append('sec-ch-ua', '"Not;A=Brand";v="99", "Google Chrome";v="139", "Chromium";v="139"');
+    headers.append('sec-fetch-site', 'cross-site');
+    headers.append('user-agent', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36');
+    return headers;
+};
+
+const createDefaultErrorResponse = (provider, href) => ({
+    rate: 0,
+    provider,
+    bestRate: false,
+    href
+});
 
 export default async (req, res) => {
     let rates = [];
 
-    var myHeaders = new Headers();
-    myHeaders.append("authority", "api.taptapsend.com");
-    myHeaders.append("accept", "*/*");
-    myHeaders.append("accept-language", "en-GB,en-US;q=0.9,en;q=0.8");
-    myHeaders.append("appian-version", "web/2022-05-03.0");
-    myHeaders.append("origin", "https://www.taptapsend.com");
-    myHeaders.append("referer", "https://www.taptapsend.com/");
-    myHeaders.append(
-        "sec-ch-ua",
-        '"Google Chrome";v="119", "Chromium";v="119", "Not?A_Brand";v="24"'
-    );
-    myHeaders.append("sec-ch-ua-mobile", "?0");
-    myHeaders.append("sec-ch-ua-platform", '"macOS"');
-    myHeaders.append("sec-fetch-dest", "empty");
-    myHeaders.append("sec-fetch-mode", "cors");
-    myHeaders.append("sec-fetch-site", "same-site");
-    myHeaders.append(
-        "user-agent",
-        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36"
-    );
-    myHeaders.append("x-device-id", "web");
-    myHeaders.append("x-device-model", "web");
-    myHeaders.append("Cookie", "SESSION=NTI4ZGZmOGEtZGZkNS00ZGUwLWE2MmYtMDA4OWNjZGZlZjkx");
-
-    var taptapRequestOptions = {
-        method: "GET",
-        headers: myHeaders,
-        redirect: "follow",
-    };
-
-    const tap_call = fetch(
+    const tapTapCall = fetch(
         "https://api.taptapsend.com/api/fxRates",
-        taptapRequestOptions
+        {
+            method: "GET",
+            headers: createTapTapHeaders(),
+            redirect: "follow",
+        }
     )
         .then((response) => response.json())
         .then((result) => {
             const nlRates = result.availableCountries.find((availableCountry) => {
-                return availableCountry.isoCountryCode == "NL"
-            }
-            );
-            let fxRate = 0
+                return availableCountry.isoCountryCode === "NL"
+            });
+            let fxRate = 0;
             if (nlRates) {
-                for (let corrridor of nlRates.corridors) {
-                    if (corrridor["isoCountryCode"] === "NG") {
-                        fxRate = corrridor["fxRate"]
-                        break
-                    };
+                for (let corridor of nlRates.corridors) {
+                    if (corridor.isoCountryCode === "NG") {
+                        fxRate = corridor.fxRate;
+                        break;
+                    }
                 }
             }
             return {
@@ -61,43 +105,17 @@ export default async (req, res) => {
             };
         })
         .catch((error) => {
-            return {
-                rate: 0,
-                provider: "TapTap",
-                bestRate: false,
-                href: "https://www.taptapsend.com/",
-            }
+            console.error("Error calling TapTap:", error);
+            return createDefaultErrorResponse("TapTap", "https://www.taptapsend.com/");
         });
 
-    var myHeaders = new Headers();
-    myHeaders.append("authority", "sendgateway.myflutterwave.com");
-    myHeaders.append("accept", "application/json, text/plain, */*");
-    myHeaders.append("accept-language", "en-GB,en-US;q=0.9,en;q=0.8");
-    myHeaders.append("origin", "https://send.flutterwave.com");
-    myHeaders.append("referer", "https://send.flutterwave.com/");
-    myHeaders.append(
-        "sec-ch-ua",
-        '"Not.A/Brand";v="8", "Chromium";v="114", "Google Chrome";v="114"'
-    );
-    myHeaders.append("sec-ch-ua-mobile", "?0");
-    myHeaders.append("sec-ch-ua-platform", '"macOS"');
-    myHeaders.append("sec-fetch-dest", "empty");
-    myHeaders.append("sec-fetch-mode", "cors");
-    myHeaders.append("sec-fetch-site", "cross-site");
-    myHeaders.append(
-        "user-agent",
-        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"
-    );
-
-    var requestOptions = {
-        method: "GET",
-        headers: myHeaders,
-        redirect: "follow",
-    };
-
-    const send_call = fetch(
+    const sendCall = fetch(
         "https://sendgateway.myflutterwave.com/api/v1/config/getcurrencyrate?fromCurrency=EUR&toCurrency=NGN",
-        requestOptions
+        {
+            method: "GET",
+            headers: createFlutterwaveHeaders(),
+            redirect: "follow",
+        }
     )
         .then((response) => response.json())
         .then((response) => {
@@ -108,7 +126,10 @@ export default async (req, res) => {
                 href: "https://send.flutterwave.com/",
             };
         })
-        .catch((error) => console.log("error", error));
+        .catch((error) => {
+            console.error("Error calling Send:", error);
+            return createDefaultErrorResponse("Send", "https://send.flutterwave.com/");
+        });
 
     const curlCommand = `curl -v 'https://acemoneytransfer.com/make-request' \
     -H 'authority: acemoneytransfer.com' \
@@ -128,16 +149,16 @@ export default async (req, res) => {
     --data-raw 'uri=rate%2Fcalculator&type=POST&data%5Bsrc_amount%5D=100&data%5Bdest_amount%5D=&data%5Buser_currency%5D=EUR&data%5Bcalculation_mode%5D=S&data%5Bdest_iso_numeric_code%5D=566&data%5Bsrc_iso_numeric_code%5D=528'
   `;
 
-    const ace_call = new Promise((resolve, reject) => {
+    const aceCall = new Promise((resolve, reject) => {
         exec(curlCommand, (error, stdout, stderr) => {
             if (error) {
                 reject(`Error: ${error.message}`);
+                return;
             }
-            exec("curl --version", (error, stdout, stderr) => console.log(`Curl Version ${stdout}`))
             try {
-                const parsed_rate = JSON.parse(stdout);
+                const parsedRate = JSON.parse(stdout);
                 resolve({
-                    rate: parseFloat(parsed_rate.data.exchange_rate).toFixed(2),
+                    rate: parseFloat(parsedRate.data.exchange_rate).toFixed(2),
                     provider: "Ace Transfer",
                     bestRate: false,
                 });
@@ -155,29 +176,23 @@ export default async (req, res) => {
             };
         })
         .catch((error) => {
-            console.error("Error Calling Ace>>>", error);
-            return {
-                rate: 0.0,
-                provider: "Ace Transfer",
-                bestRate: false,
-                href: "https://acemoneytransfer.com/referral-link/3056004",
-            };
+            console.error("Error calling Ace:", error);
+            return createDefaultErrorResponse("Ace Transfer", "https://acemoneytransfer.com/referral-link/3056004");
         });
 
-    const remitly_call = new Promise((resolve, reject) => {
+    const remitlyCall = new Promise((resolve, reject) => {
         fetch("https://api.remitly.io/v5/pricing/estimates?amount=1%20EUR&anchor=SEND&conduit=NLD%3AEUR-NGA%3ANGN&purpose=OTHER", {
-            "headers": {
-                "accept": "application/json",
+            headers: {
+                accept: "application/json",
             },
-            "referrerPolicy": "no-referrer",
-            "body": null,
-            "method": "GET",
-            "mode": "cors",
-            "credentials": "omit"
+            referrerPolicy: "no-referrer",
+            body: null,
+            method: "GET",
+            mode: "cors",
+            credentials: "omit"
         }).then(result => resolve(result.json())).catch(error => reject(error));
     })
         .then((result) => {
-            // console.log("Remitly<<<<<<<", result)
             return {
                 rate: parseFloat(result[0].exchange_rate_info.base_rate).toFixed(2),
                 provider: "Remitly",
@@ -186,33 +201,14 @@ export default async (req, res) => {
             };
         })
         .catch((error) => {
-            console.error("Error Calling Remitly>>>", error);
-            return {
-                rate: 0.0,
-                provider: "Ace Transfer",
-                bestRate: false,
-                href: "https://remit.ly/94fqcne9",
-            };
+            console.error("Error calling Remitly:", error);
+            return createDefaultErrorResponse("Remitly", "https://remit.ly/94fqcne9");
         });
-
-    const nalaHeaders = new Headers();
-    nalaHeaders.append("accept", "*/*");
-    nalaHeaders.append("accept-language", "en-GB,en;q=0.9,nl-NL;q=0.8,nl;q=0.7,en-US;q=0.6");
-    nalaHeaders.append("origin", "https://www.nala.com");
-    nalaHeaders.append("priority", "u=1, i");
-    nalaHeaders.append("referer", "https://www.nala.com/");
-    nalaHeaders.append("sec-ch-ua", "\"Not/A)Brand\";v=\"8\", \"Chromium\";v=\"126\", \"Google Chrome\";v=\"126\"");
-    nalaHeaders.append("sec-ch-ua-mobile", "?0");
-    nalaHeaders.append("sec-ch-ua-platform", "\"macOS\"");
-    nalaHeaders.append("sec-fetch-dest", "empty");
-    nalaHeaders.append("sec-fetch-mode", "cors");
-    nalaHeaders.append("sec-fetch-site", "cross-site");
-    nalaHeaders.append("user-agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36");
 
     const nalaCall = new Promise((resolve, reject) => {
         fetch("https://partners-api.prod.nala-api.com/v1/fx/rates", {
             method: "GET",
-            headers: nalaHeaders,
+            headers: createNalaHeaders(),
             redirect: "follow"
         })
             .then((response) => resolve(response.json()))
@@ -221,10 +217,9 @@ export default async (req, res) => {
         .then((result) => {
             const nalaRates = result.data.find(
                 (data) => {
-                    return data.source_currency === "EUR" && data.destination_currency === "NGN" && data.provider_name === "nala"
+                    return data.source_currency === "EUR" && data.destination_currency === "NGN"
                 }
-            )
-            // console.log("NALA<<<<<<<", nalaRates)
+            );
             return {
                 rate: parseFloat(nalaRates.rate).toFixed(2),
                 provider: "Nala",
@@ -233,44 +228,35 @@ export default async (req, res) => {
             };
         })
         .catch((error) => {
-            console.error("Error Calling Nala>>>", error);
-            return {
-                rate: 0.0,
-                provider: "Nala",
-                bestRate: false,
-                href: "https://join.iwantnala.com/JESSE-715106",
-            };
+            console.error("Error calling Nala:", error);
+            return createDefaultErrorResponse("Nala", "https://join.iwantnala.com/JESSE-715106");
         });
 
 
     const lemfiCall = new Promise((resolve, reject) => {
         fetch("https://lemfi.com/api/lemonade/v2/exchange", {
-            "headers": {
-                "accept": "application/json",
+            headers: {
+                accept: "application/json",
                 "accept-language": "en-GB,en;q=0.9,nl-NL;q=0.8,nl;q=0.7,en-US;q=0.6",
                 "content-type": "application/json",
-                "priority": "u=1, i",
-                "sec-ch-ua": "\"Not(A:Brand\";v=\"99\", \"Google Chrome\";v=\"133\", \"Chromium\";v=\"133\"",
+                priority: "u=1, i",
+                "sec-ch-ua": '"Not(A:Brand";v="99", "Google Chrome";v="133", "Chromium";v="133"',
                 "sec-ch-ua-mobile": "?0",
-                "sec-ch-ua-platform": "\"macOS\"",
+                "sec-ch-ua-platform": '"macOS"',
                 "sec-fetch-dest": "empty",
                 "sec-fetch-mode": "cors",
                 "sec-fetch-site": "same-origin"
             },
-            "referrer": "https://lemfi.com/",
-            "referrerPolicy": "origin",
-            "body": "{\"from\":\"EUR\",\"to\":\"NGN\"}",
-            "method": "POST",
-            "mode": "cors",
-            "credentials": "include"
+            referrer: "https://lemfi.com/",
+            referrerPolicy: "origin",
+            body: '{"from":"EUR","to":"NGN"}',
+            method: "POST",
+            mode: "cors",
+            credentials: "include"
         }).then((response) => resolve(response.json()))
             .catch((error) => reject(error));
     }).then((result) => {
-        if (result.data.rate > 4000) {
-            throw new Error(`Lemfi rate is too high because WTH is ${result.data.rate}`,);
-        }
         return {
-            // rate: parseFloat(Math.floor(result.data.rate % 10000)).toFixed(2),
             rate: Math.floor(result.data.rate % 10000),
             provider: "Lemfi(referal code - OBIN6518)",
             bestRate: false,
@@ -278,37 +264,55 @@ export default async (req, res) => {
         };
     })
         .catch((error) => {
-            console.error("Error Calling Lemfi>>>", error);
+            console.error("Error calling Lemfi:", error);
+            return createDefaultErrorResponse("Lemfi(referal code - OBIN6518)", "https://lemfi.com");
+        });
+
+    const afriexCall = new Promise((resolve, reject) => {
+        fetch("https://prod.afx-server.com/v2/public/rates?base=EUR", {
+            method: "GET",
+            headers: createAfriexHeaders(),
+            redirect: "follow"
+        })
+            .then((response) => resolve(response.json()))
+            .catch((error) => reject(error));
+    })
+        .then((result) => {
+            const ngnRate = result.rates.EUR.NGN;
             return {
-                rate: 0.0,
-                provider: "Lemfi(referal code - OBIN6518)",
+                rate: parseFloat(ngnRate).toFixed(2),
+                provider: "Afriex",
                 bestRate: false,
-                href: "https://lemfi.com",
+                href: "https://www.afriex.com/",
             };
+        })
+        .catch((error) => {
+            console.error("Error calling Afriex:", error);
+            return createDefaultErrorResponse("Afriex", "https://www.afriex.com/");
         });
 
     const wiseCall = new Promise((resolve, reject) => {
         fetch("https://wise.com/gateway/v4/comparisons?payInMethod=BANK_TRANSFER&sendAmount=10&sourceCurrency=EUR&targetCurrency=NGN", {
-            "headers": {
-                "accept": "*/*",
+            headers: {
+                accept: "*/*",
                 "accept-language": "en-GB,en;q=0.9,nl-NL;q=0.8,nl;q=0.7,en-US;q=0.6",
                 "content-type": "application/json",
-                "priority": "u=1, i",
-                "sec-ch-ua": "\"Not(A:Brand\";v=\"99\", \"Google Chrome\";v=\"133\", \"Chromium\";v=\"133\"",
+                priority: "u=1, i",
+                "sec-ch-ua": '"Not(A:Brand";v="99", "Google Chrome";v="133", "Chromium";v="133"',
                 "sec-ch-ua-mobile": "?0",
-                "sec-ch-ua-platform": "\"macOS\"",
+                "sec-ch-ua-platform": '"macOS"',
                 "sec-fetch-dest": "empty",
                 "sec-fetch-mode": "cors",
                 "sec-fetch-site": "same-site"
             },
-            "referrer": "https://wise.com/",
-            "referrerPolicy": "strict-origin-when-cross-origin",
-            "body": null,
-            "method": "GET",
-            "mode": "cors",
-            "credentials": "include"
+            referrer: "https://wise.com/",
+            referrerPolicy: "strict-origin-when-cross-origin",
+            body: null,
+            method: "GET",
+            mode: "cors",
+            credentials: "include"
         }).then((response) => {
-            return resolve(response.json())
+            return resolve(response.json());
         }).catch((error) => reject(error));
     }).then((result) => {
         const wiseProvider = result.providers.find(provider => provider.alias === "wise");
@@ -324,47 +328,42 @@ export default async (req, res) => {
             throw new Error("Wise provider or quotes not found");
         }
     }).catch((error) => {
-        console.error("Error Calling Wise>>>", error);
-        return {
-            rate: 0.0,
-            provider: "Wise",
-            bestRate: false,
-            href: "https://wise.com/invite/dic/obinnae93",
-        };
+        console.error("Error calling Wise:", error);
+        return createDefaultErrorResponse("Wise", "https://wise.com/invite/dic/obinnae93");
     });
 
     await Promise.all([
-        ace_call,
-        // send_call,
-        tap_call,
-        remitly_call,
+        aceCall,
+        tapTapCall,
+        remitlyCall,
         nalaCall,
         lemfiCall,
+        afriexCall,
         wiseCall
     ])
         .then(
             ([
-                ace_reponse,
-                // send_response,
-                tap_response,
-                remitly_response,
-                nala_response,
-                lemfi_response,
-                wiseCall_response
+                aceResponse,
+                tapTapResponse,
+                remitlyResponse,
+                nalaResponse,
+                lemfiResponse,
+                afriexResponse,
+                wiseResponse
             ]) => {
                 rates = [
-                    ace_reponse,
-                    // send_response,
-                    tap_response,
-                    remitly_response,
-                    nala_response,
-                    lemfi_response,
-                    wiseCall_response
+                    aceResponse,
+                    tapTapResponse,
+                    remitlyResponse,
+                    nalaResponse,
+                    lemfiResponse,
+                    afriexResponse,
+                    wiseResponse
                 ];
             }
         )
         .catch((error) => {
-            console.error(error);
+            console.error("Error in Promise.all:", error);
         });
 
     const maxRateIndex = rates.reduce(
@@ -380,7 +379,7 @@ export default async (req, res) => {
         object.bestRate = index === maxRateIndex;
     });
 
-    rates = rates.filter(rate => rate.rate > 0)
+    rates = rates.filter(rate => rate.rate > 0);
 
     return res.status(200).json(rates);
 };
