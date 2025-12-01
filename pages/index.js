@@ -23,11 +23,6 @@ export default function Home() {
       <main className="main-content">
         <section className="hero">
           <div className="hero-content">
-            <div className="hero-badge">
-              <span className="status-dot"></span>
-              Available for opportunities
-            </div>
-
             <h1 className="hero-title">
               Hey, I'm <span className="highlight">Jesse Egbosionu</span>
             </h1>
@@ -44,7 +39,7 @@ export default function Home() {
               </p>
 
               <p>
-                Over the past 5 years, I've shipped products across <strong>finance</strong>, <strong>ecommerce</strong>,
+                Over the past 6 years, I've shipped products across <strong>finance</strong>, <strong>ecommerce</strong>,
                 and <strong>logistics</strong>, working with technologies like Python (Django, FastAPI),
                 JavaScript (React, Node.js), PostgreSQL, Docker, Redis, and Kubernetes.
               </p>

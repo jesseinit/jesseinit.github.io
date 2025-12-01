@@ -257,7 +257,7 @@ export default async (req, res) => {
             .catch((error) => reject(error));
     }).then((result) => {
         return {
-            rate: Math.floor(result.data.rate % 10000),
+            rate: 0,
             provider: "Lemfi(referal code - OBIN6518)",
             bestRate: false,
             href: "https://lemfi.com",
