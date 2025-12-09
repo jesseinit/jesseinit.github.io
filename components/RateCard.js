@@ -7,24 +7,27 @@ export default function RateCard({ provider, rate, href, isBest, index, formatCu
       className={`rate-card ${isBest ? 'best' : ''}`}
       style={{ animationDelay: `${index * 0.1}s` }}
     >
-      <div className="rate-card-header">
-        <div className="provider-info">
-          {logo && (
-            <img
-              src={logo}
-              alt={`${provider} logo`}
-              className="provider-logo"
-            />
-          )}
-          <h3 className="provider-name">{provider}</h3>
+      {logo && (
+        <div className="provider-logo-background">
+          <img
+            src={logo}
+            alt={`${provider} logo`}
+            className="provider-logo-faded"
+          />
         </div>
-        {isBest && <span className="best-badge">Best Rate</span>}
-      </div>
+      )}
 
-      <div className="rate-value">{formatCurrency(rate)}</div>
+      <div className="rate-card-content">
+        <div className="rate-card-header">
+          <h3 className="provider-name">{provider}</h3>
+          {isBest && <span className="best-badge">Best Rate</span>}
+        </div>
 
-      <div className="rate-card-footer">
-        <span className="visit-link">Visit provider →</span>
+        <div className="rate-value">{formatCurrency(rate)}</div>
+
+        <div className="rate-card-footer">
+          <span className="visit-link">Visit provider →</span>
+        </div>
       </div>
     </a>
   );

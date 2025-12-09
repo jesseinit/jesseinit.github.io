@@ -509,6 +509,7 @@ strong {
 }
 
 .rate-card {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: var(--spacing-md);
@@ -520,6 +521,7 @@ strong {
   cursor: pointer;
   animation: fadeInUp 0.6s ease forwards;
   opacity: 0;
+  overflow: hidden;
 
   &:hover {
     background: var(--color-accent);
@@ -530,14 +532,16 @@ strong {
       color: var(--color-primary);
       transform: translateX(4px);
     }
+
+    .provider-logo-faded {
+      opacity: 0.15;
+    }
   }
 
   &.best {
     border-width: 2px;
     background: var(--color-accent);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    position: relative;
-    overflow: hidden;
 
     &::before {
       content: '';
@@ -547,6 +551,7 @@ strong {
       right: 0;
       height: 3px;
       background: var(--color-primary);
+      z-index: 1;
     }
 
     &:hover {
@@ -563,24 +568,41 @@ strong {
   }
 }
 
+.provider-logo-background {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 120px;
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.provider-logo-faded {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  opacity: 0.12;
+  filter: grayscale(100%);
+  transition: opacity 0.3s ease;
+}
+
+.rate-card-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
 .rate-card-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   gap: var(--spacing-sm);
-}
-
-.provider-info {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-}
-
-.provider-logo {
-  width: 32px;
-  height: 32px;
-  object-fit: contain;
-  border-radius: var(--radius-sm);
 }
 
 .provider-name {
