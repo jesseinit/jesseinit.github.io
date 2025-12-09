@@ -570,6 +570,19 @@ strong {
   gap: var(--spacing-sm);
 }
 
+.provider-info {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.provider-logo {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  border-radius: var(--radius-sm);
+}
+
 .provider-name {
   font-size: 1.25rem;
   font-weight: 700;

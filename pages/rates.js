@@ -109,6 +109,7 @@ export default function Rates() {
                                     isBest={item.bestRate || item.rate === bestRate}
                                     index={index}
                                     formatCurrency={formatCurrency}
+                                    logo={item.logo}
                                 />
                             ))}
                         </div>

@@ -1,4 +1,4 @@
-export default function RateCard({ provider, rate, href, isBest, index, formatCurrency }) {
+export default function RateCard({ provider, rate, href, isBest, index, formatCurrency, logo }) {
   return (
     <a
       href={href}
@@ -8,7 +8,16 @@ export default function RateCard({ provider, rate, href, isBest, index, formatCu
       style={{ animationDelay: `${index * 0.1}s` }}
     >
       <div className="rate-card-header">
-        <h3 className="provider-name">{provider}</h3>
+        <div className="provider-info">
+          {logo && (
+            <img
+              src={logo}
+              alt={`${provider} logo`}
+              className="provider-logo"
+            />
+          )}
+          <h3 className="provider-name">{provider}</h3>
+        </div>
         {isBest && <span className="best-badge">Best Rate</span>}
       </div>
 

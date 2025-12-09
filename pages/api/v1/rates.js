@@ -1,4 +1,4 @@
-const { exec } = require("child_process");
+import { log } from "console";
 
 const COMMON_HEADERS = {
     'accept': '*/*',
@@ -102,6 +102,7 @@ export default async (req, res) => {
                 provider: "TapTap",
                 bestRate: false,
                 href: "https://www.taptapsend.com/",
+                logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSFcB9ECgZxEULIhxf-PZWEn23UPZATQZblQQ&s"
             };
         })
         .catch((error) => {
@@ -124,6 +125,7 @@ export default async (req, res) => {
                 provider: "Send",
                 bestRate: false,
                 href: "https://send.flutterwave.com/",
+                logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyhQXYEg8iHCMajGdJn0B0FxwsuzAfkSeBgQ&s"
             };
         })
         .catch((error) => {
@@ -131,54 +133,11 @@ export default async (req, res) => {
             return createDefaultErrorResponse("Send", "https://send.flutterwave.com/");
         });
 
-    const curlCommand = `curl -v 'https://acemoneytransfer.com/make-request' \
-    -H 'authority: acemoneytransfer.com' \
-    -H 'accept: */*' \
-    -H 'accept-language: en-GB,en-US;q=0.9,en;q=0.8' \
-    -H 'content-type: application/x-www-form-urlencoded; charset=UTF-8' \
-    -H 'origin: https://acemoneytransfer.com' \
-    -H 'referer: https://acemoneytransfer.com/Nigeria/Send-Money-to-Nigeria' \
-    -H 'sec-ch-ua: "Not_A Brand";v="8", "Chromium";v="120", "Google Chrome";v="120"' \
-    -H 'sec-ch-ua-mobile: ?0' \
-    -H 'sec-ch-ua-platform: "macOS"' \
-    -H 'sec-fetch-dest: empty' \
-    -H 'sec-fetch-mode: cors' \
-    -H 'sec-fetch-site: same-origin' \
-    -H 'user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36' \
-    -H 'x-requested-with: XMLHttpRequest' \
-    --data-raw 'uri=rate%2Fcalculator&type=POST&data%5Bsrc_amount%5D=100&data%5Bdest_amount%5D=&data%5Buser_currency%5D=EUR&data%5Bcalculation_mode%5D=S&data%5Bdest_iso_numeric_code%5D=566&data%5Bsrc_iso_numeric_code%5D=528'
-  `;
-
-    const aceCall = new Promise((resolve, reject) => {
-        exec(curlCommand, (error, stdout, stderr) => {
-            if (error) {
-                reject(`Error: ${error.message}`);
-                return;
-            }
-            try {
-                const parsedRate = JSON.parse(stdout);
-                resolve({
-                    rate: parseFloat(parsedRate.data.exchange_rate).toFixed(2),
-                    provider: "Ace Transfer",
-                    bestRate: false,
-                });
-            } catch (parseError) {
-                reject(parseError.message);
-            }
-        });
-    })
-        .then((result) => {
-            return {
-                rate: parseFloat(result.rate).toFixed(2),
-                provider: "Ace Transfer",
-                bestRate: false,
-                href: "https://acemoneytransfer.com/referral-link/3056004",
-            };
-        })
-        .catch((error) => {
-            console.error("Error calling Ace:", error);
-            return createDefaultErrorResponse("Ace Transfer", "https://acemoneytransfer.com/referral-link/3056004");
-        });
+    // Ace Transfer temporarily disabled due to Cloudflare protection
+    // Will return a default response to avoid blocking the API
+    const aceCall = Promise.resolve(
+        createDefaultErrorResponse("Ace Transfer", "https://acemoneytransfer.com/referral-link/3056004")
+    );
 
     const remitlyCall = new Promise((resolve, reject) => {
         fetch("https://api.remitly.io/v5/pricing/estimates?amount=1%20EUR&anchor=SEND&conduit=NLD%3AEUR-NGA%3ANGN&purpose=OTHER", {
@@ -198,6 +157,7 @@ export default async (req, res) => {
                 provider: "Remitly",
                 bestRate: false,
                 href: "https://remit.ly/94fqcne9",
+                logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRNZm0irEt8u6LXo-OFXZ9bcTchNoSeaDDnsA&s"
             };
         })
         .catch((error) => {
@@ -225,6 +185,7 @@ export default async (req, res) => {
                 provider: "Nala",
                 bestRate: false,
                 href: "https://join.iwantnala.com/JESSE-715106",
+                logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRpbV0MWgCocA3dFuWoxgCmQsxGfqRuttbD3w&s"
             };
         })
         .catch((error) => {
@@ -261,6 +222,7 @@ export default async (req, res) => {
             provider: "Lemfi(referal code - OBIN6518)",
             bestRate: false,
             href: "https://lemfi.com",
+            logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSMYTBiPB_joupdSSoBL1fA0wySDPcMpY92XQ&s"
         };
     })
         .catch((error) => {
@@ -284,6 +246,7 @@ export default async (req, res) => {
                 provider: "Afriex",
                 bestRate: false,
                 href: "https://www.afriex.com/",
+                logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTvFac7oIDG6QsJlYsBIRnWhFfy0OWjN5Mspg&s"
             };
         })
         .catch((error) => {
@@ -323,6 +286,7 @@ export default async (req, res) => {
                 provider: "Wise",
                 bestRate: false,
                 href: "https://wise.com/invite/dic/obinnae93",
+                logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ3L26sFmjg2xyW4CJy_5peQt-v0JHgsYhzvA&s"
             };
         } else {
             throw new Error("Wise provider or quotes not found");
@@ -339,7 +303,8 @@ export default async (req, res) => {
         nalaCall,
         lemfiCall,
         afriexCall,
-        wiseCall
+        wiseCall,
+        sendCall
     ])
         .then(
             ([
@@ -349,7 +314,8 @@ export default async (req, res) => {
                 nalaResponse,
                 lemfiResponse,
                 afriexResponse,
-                wiseResponse
+                wiseResponse,
+                sendResponse
             ]) => {
                 rates = [
                     aceResponse,
@@ -358,7 +324,8 @@ export default async (req, res) => {
                     nalaResponse,
                     lemfiResponse,
                     afriexResponse,
-                    wiseResponse
+                    wiseResponse,
+                    sendResponse
                 ];
             }
         )
