@@ -13,20 +13,20 @@ export default function Home() {
           <div className="hero-content">
 
             <p className="hero-subtitle">
-              A software engineer architecting scalable backend systems in Amsterdam
+              A sofrware engineer building systems that scale in Amsterdam
             </p>
 
             <div className="hero-description">
               <p>
-                I build and scale software backends with a focus on creating impact through
-                teamwork and continuous learning. My passion lies in solving complex problems
-                and delivering solutions that enrich people's lives.
+                I architect and scale backend systems that handle millions of requests.
+                From payment processing to logistics orchestration, I turn complex
+                technical challenges into reliable production infrastructure.
               </p>
 
               <p>
-                Over the past 6 years, I've shipped products across <strong>finance</strong>, <strong>ecommerce</strong>,
-                and <strong>logistics</strong>, working with technologies like Python (Django, FastAPI),
-                JavaScript (React, Node.js), PostgreSQL, Docker, Redis, and Kubernetes.
+                6 years shipping products across <strong>finance</strong>, <strong>ecommerce</strong>, and <strong>logistics</strong>.
+                I work with Python (Django, FastAPI), JavaScript (React, Node.js), PostgreSQL,
+                Docker, Redis, and Kubernetes to build systems that just work.
               </p>
             </div>
 

@@ -51,7 +51,7 @@ export default function Rates() {
         <Layout
             title="EUR to NGN Exchange Rates - Jesse Egbosionu"
             description="Compare live EUR to NGN exchange rates across multiple providers."
-            showNavLinks={true}
+            showNavLinks={false}
         >
             <section className="rates-section">
                 <div className="rates-header">

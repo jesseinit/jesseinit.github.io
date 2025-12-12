@@ -3,7 +3,7 @@ export default function Footer() {
     <footer className="footer">
       <div className="footer-content">
         <p>
-          Built with <span className="heart">❤️</span> and Amara Chukwu
+          Built with <span className="heart">❤️</span>
         </p>
         <p className="footer-year">© {new Date().getFullYear()}</p>
       </div>
