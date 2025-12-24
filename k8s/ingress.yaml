@@ -1,0 +1,28 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: jesseinit-portfolio
+  labels:
+    app: jesseinit-portfolio
+  annotations:
+    # Uncomment and configure based on your ingress controller
+    # nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    # cert-manager.io/cluster-issuer: "letsencrypt-prod"
+spec:
+  ingressClassName: nginx  # Change to your ingress class (nginx, traefik, etc.)
+  rules:
+  - host: jesseinit.com  # Replace with your domain
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: jesseinit-portfolio
+            port:
+              number: 80
+  # Uncomment for TLS/HTTPS support
+  # tls:
+  # - hosts:
+  #   - jesseinit.com
+  #   secretName: jesseinit-portfolio-tls

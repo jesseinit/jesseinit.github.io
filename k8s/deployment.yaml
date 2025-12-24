@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jesseinit-portfolio
+  labels:
+    app: jesseinit-portfolio
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: jesseinit-portfolio
+  template:
+    metadata:
+      labels:
+        app: jesseinit-portfolio
+    spec:
+      containers:
+      - name: portfolio
+        image: jesseinit-portfolio:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 3000
+          name: http
+        env:
+        - name: NODE_ENV
+          value: "production"
+        - name: NEXT_TELEMETRY_DISABLED
+          value: "1"
+        envFrom:
+        - configMapRef:
+            name: jesseinit-portfolio-config
+            optional: true
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 3000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 3000
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+      restartPolicy: Always
