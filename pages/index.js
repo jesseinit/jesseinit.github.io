@@ -13,7 +13,7 @@ export default function Home() {
           <div className="hero-content">
 
             <p className="hero-subtitle">
-              A sofrware engineer building systems that scale in Amsterdam
+              A software engineer building systems that scale in Amsterdam
             </p>
 
             <div className="hero-description">
